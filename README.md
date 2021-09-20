@@ -1,5 +1,9 @@
 # Simple UKFast SDK
 
+```
+composer require gman98ish/ukfast-simple-php-sdk
+```
+
 This is not intended to replace the UKFast SDK, but is simply a proof of concept of another way we could approach it.
 
 Instead of the SDK being an abstraction over our API's, this offers a thin wrapper.
