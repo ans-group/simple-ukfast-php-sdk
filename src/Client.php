@@ -12,11 +12,11 @@ class Client
      */
     protected $guzzle;
 
-    protected $basePath = 'http://kong:7000';
+    protected $basePath = 'https://api.ukfast.io';
 
     protected $token;
 
-    protected $persistentHeaders;
+    protected $persistentHeaders = [];
 
     public function __construct(GuzzleHttpClient $guzzle)
     {
@@ -116,6 +116,13 @@ class Client
     public function setHeaders($headers)
     {
         $this->persistentHeaders = $headers;
+        return $this;
+    }
+    
+    public function setBasePath($basePath)
+    {
+        $this->basePath = $basePath;
+        return $this;
     }
 
     protected function headers($headers)
