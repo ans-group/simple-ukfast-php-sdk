@@ -18,4 +18,9 @@ class Page
     {
         return $this->data;
     }
+    
+    public function getMeta()
+    {
+        return $this->meta;
+    }
 }
