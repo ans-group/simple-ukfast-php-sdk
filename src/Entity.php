@@ -2,7 +2,9 @@
 
 namespace UKFast\SimpleSDK;
 
-class Entity
+use ArrayAccess;
+
+class Entity implements ArrayAccess
 {
     /**
      * @var object
@@ -26,6 +28,31 @@ class Entity
     public function __set($prop, $value)
     {
         $this->props->{$prop} = $value;
+    }
+    
+    public function toArray()
+    {   
+        return $this->props;
+    }
+    
+    public function offsetExists(mixed $offset)
+    {
+        return isset($this->props[$offset]);
+    }
+    
+    public function offsetGet(mixed $offset)
+    {
+        return $this->props[$offset];
+    }
+    
+    public function offsetSet(mixed $offset, mixed $value)
+    {
+        $this->props[$offset] = $value;
+    }
+    
+    public function offsetUnset(mixed $offset)
+    {
+        unset($this->props[$offset]);
     }
 
     private function findSubEntities($props)
