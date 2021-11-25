@@ -10,8 +10,8 @@ class SelfResponse
 
     public function __construct($data, $meta)
     {
-        $this->data = $data;        
-        $this->meta = $meta;        
+        $this->data = $data;
+        $this->meta = $meta;
     }
 
     public function __get($prop)

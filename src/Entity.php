@@ -31,7 +31,7 @@ class Entity implements ArrayAccess
     }
     
     public function toArray()
-    {   
+    {
         return $this->props;
     }
     
