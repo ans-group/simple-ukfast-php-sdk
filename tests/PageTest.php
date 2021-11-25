@@ -69,8 +69,7 @@ class PageTest extends TestCase
     public function can_get_current_page()
     {
         $page = $this->getSamplePage();
-// var_dump($page);
-        // exit;
+
         $this->assertEquals(1, $page->currentPage());
     }
 
