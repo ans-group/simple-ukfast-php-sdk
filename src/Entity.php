@@ -32,7 +32,7 @@ class Entity implements ArrayAccess
     
     public function toArray()
     {
-        return $this->props;
+        return (array) $this->props;
     }
     
     public function offsetExists($offset)
