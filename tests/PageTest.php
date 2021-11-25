@@ -4,6 +4,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use UKFast\SimpleSDK\Page;
+use UKFast\SimpleSDK\Entity;
 
 class PageTest extends TestCase
 {
@@ -14,7 +15,12 @@ class PageTest extends TestCase
     {
         $page = $this->getSamplePage();
 
-        $this->assertEquals($this->getSampleData(), $page->getItems());
+        $expectedResponse = [];
+        foreach ($this->getSampleData() as $item) {
+            $expectedResponse[] = new Entity($item);
+        }
+
+        $this->assertEquals($expectedResponse, $page->getItems());
     }
 
     /**
@@ -63,7 +69,8 @@ class PageTest extends TestCase
     public function can_get_current_page()
     {
         $page = $this->getSamplePage();
-
+// var_dump($page);
+        // exit;
         $this->assertEquals(1, $page->currentPage());
     }
 
@@ -95,14 +102,14 @@ class PageTest extends TestCase
 
     protected function getSampleMeta()
     {
-        return [
-            'pagination' => [
+        return (object) [
+            'pagination' => (object) [
                 'total' => 5,
                 'count' => 3,
                 'per_page' => 3,
                 'total_pages' => 2,
                 'current_page' => 1,
-                'links' => [
+                'links' => (object) [
                     'next' => '/?page=2',
                     'previous' => null,
                     'first' => '/?page=1',

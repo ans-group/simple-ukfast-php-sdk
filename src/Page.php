@@ -10,7 +10,9 @@ class Page
 
     public function __construct($data, $meta)
     {
-        $this->data = array_map(fn ($item) => new Entity($item), $data);
+        $this->data = array_map(function ($item) {
+            return new Entity($item);
+        }, $data);
         $this->meta = $meta;
     }
 
