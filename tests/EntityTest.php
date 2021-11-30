@@ -16,6 +16,8 @@ class EntityTest extends TestCase
         ]);
         
         parent::setUp();
+
+        return;
     }
 
     /**
