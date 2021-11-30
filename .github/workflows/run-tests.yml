@@ -34,7 +34,7 @@ jobs:
                   composer update --prefer-stable --prefer-dist --no-interaction --no-suggest
 
             - name: Execute tests
-              run: vendor/bin/phpunit --testdox
+              run: vendor/bin/phpunit
 
             - name: Execute code sniffer
               run: vendor/bin/phpcs -p
