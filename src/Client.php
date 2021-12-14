@@ -90,7 +90,6 @@ class Client
             
             return new SelfResponse($raw->data, $raw->meta);
         });
-
     }
 
     public function destroy($path, $params = [], $headers = [])
