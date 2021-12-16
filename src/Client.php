@@ -37,7 +37,7 @@ class Client
     public function getAsync($path, $params = [], $headers = [])
     {
         $promise = $this->guzzle->getAsync($this->path($path), [
-            'query' => $params,
+            'query' => $this->formatQueryParams($params),
             'headers' => $this->headers($headers),
         ]);
 
@@ -60,7 +60,7 @@ class Client
     public function createAsync($path, $body, $params = [], $headers = [])
     {
         $promise = $this->guzzle->postAsync($this->path($path), [
-            'query' => $params,
+            'query' => $this->formatQueryParams($params),
             'headers' => $this->headers($headers),
             'json' => $body,
         ]);
@@ -80,7 +80,7 @@ class Client
     public function updateAsync($path, $body, $params = [], $headers = [])
     {
         $promise = $this->guzzle->patchAsync($this->path($path), [
-            'query' => $params,
+            'query' => $this->formatQueryParams($params),
             'headers' => $this->headers($headers),
             'json' => $body,
         ]);
@@ -100,7 +100,7 @@ class Client
     public function destroyAsync($path, $params = [], $headers = [])
     {
         return $this->guzzle->deleteAsync($this->path($path), [
-            'query' => $params,
+            'query' => $this->formatQueryParams($params),
             'headers' => $this->headers($headers),
         ]);
     }
@@ -135,5 +135,16 @@ class Client
     protected function path($path)
     {
         return rtrim($this->basePath, '/') . '/' . ltrim($path, '/');
+    }
+
+    protected function formatQueryParams($params)
+    {
+        foreach ($params as &$param) {
+            if (is_array($param)) {
+                $param = implode(',', $param);
+            }
+        }
+        
+        return $params;
     }
 }

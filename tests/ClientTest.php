@@ -187,7 +187,7 @@ class ClientTest extends TestCase
      */
     public function wraps_client_exceptions_as_ukfast_exceptions()
     {
-        $this->markTestIncomplete();
+        $this->markTestIncomplete(); // need to decide how we're doing exceptions
         $mock = new MockHandler([
             new Response(400, [], json_encode([
                 'errors' => [[
@@ -242,6 +242,36 @@ class ClientTest extends TestCase
         $this->assertFalse($response instanceof Page);
         $this->assertTrue($response instanceof Entity);
         $this->assertEquals(1, $response->id);
+    }
+
+    /**
+     * @test
+     */
+    public function can_send_query_params_as_array_for_get_requests()
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => [
+                    'id' => 1,
+                ],
+                'meta' => [],
+            ])),
+        ]);
+        $container = [];
+        $history = Middleware::history($container);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $guzzle = new Guzzle(['handler' => $handler]);
+        $client = new Client($guzzle);
+
+        $response = $client->get("/", [
+            'id:in' => [1, 2, 3],
+        ]);
+        
+        $this->assertEquals(1, count($container));
+        $uri = $container[0]['request']->getUri();
+
+        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
     }
 
     /**
@@ -308,6 +338,38 @@ class ClientTest extends TestCase
     /**
      * @test
      */
+    public function can_send_query_params_as_array_for_post_requests()
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => [
+                    'id' => 1,
+                ],
+                'meta' => [
+                    'location' => 'https://api.ukfast.io/pss/v1/requests/1'
+                ]
+            ])),
+        ]);
+        $container = [];
+        $history = Middleware::history($container);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $guzzle = new Guzzle(['handler' => $handler]);
+        $client = new Client($guzzle);
+        
+        $client->create("/", ['name' => 'bing'], [
+            'id:in' => [1, 2, 3],
+        ]);
+        
+        $this->assertEquals(1, count($container));
+        $uri = $container[0]['request']->getUri();
+
+        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+    }
+
+    /**
+     * @test
+     */
     public function update_sends_patch_requests()
     {
         $mock = new MockHandler([
@@ -337,6 +399,38 @@ class ClientTest extends TestCase
     /**
      * @test
      */
+    public function can_send_query_params_as_array_for_patch_requests()
+    {
+        $mock = new MockHandler([
+            new Response(200, [], json_encode([
+                'data' => [
+                    'id' => 1,
+                ],
+                'meta' => [
+                    'location' => 'https://api.ukfast.io/pss/v1/requests/1'
+                ]
+            ])),
+        ]);
+        $container = [];
+        $history = Middleware::history($container);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $guzzle = new Guzzle(['handler' => $handler]);
+        $client = new Client($guzzle);
+        
+        $client->update("/", ['name' => 'bing'], [
+            'id:in' => [1, 2, 3],
+        ]);
+        
+        $this->assertEquals(1, count($container));
+        $uri = $container[0]['request']->getUri();
+
+        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+    }
+
+    /**
+     * @test
+     */
     public function destroy_sends_delete_requests()
     {
         $mock = new MockHandler([
@@ -353,5 +447,30 @@ class ClientTest extends TestCase
         
         $this->assertEquals(1, count($container));
         $this->assertEquals('DELETE', $container[0]['request']->getMethod());
+    }
+
+    /**
+     * @test
+     */
+    public function can_send_query_params_as_array_for_delete_requests()
+    {
+        $mock = new MockHandler([
+            new Response(204),
+        ]);
+        $container = [];
+        $history = Middleware::history($container);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $guzzle = new Guzzle(['handler' => $handler]);
+        $client = new Client($guzzle);
+        
+        $client->destroy("/", [
+            'id:in' => [1, 2, 3],
+        ]);
+        
+        $this->assertEquals(1, count($container));
+        $uri = $container[0]['request']->getUri();
+
+        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
     }
 }
