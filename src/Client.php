@@ -3,7 +3,10 @@
 namespace UKFast\SimpleSDK;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\Utils;
+use UKFast\SimpleSDK\Exceptions\ValidationException;
 
 class Client
 {
@@ -69,6 +72,13 @@ class Client
             $raw = json_decode($response->getBody()->getContents());
             
             return new SelfResponse($raw->data, $raw->meta);
+        }, function ($e) {
+            if (!$e instanceof ClientException) {
+                throw $e;
+            }
+            
+            $raw = json_decode($e->getResponse()->getBody());
+            throw new ValidationException($raw->errors);
         });
     }
 
