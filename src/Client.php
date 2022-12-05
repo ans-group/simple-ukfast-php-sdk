@@ -48,7 +48,8 @@ class Client
             $raw = json_decode($response->getBody()->getContents());
 
             if (is_array($raw->data)) {
-                return new Page($raw->data, $raw->meta);
+                $meta = isset($raw->meta) ? $raw->meta : null;
+                return new Page($raw->data, $meta);
             }
     
             return new Entity($raw->data);
