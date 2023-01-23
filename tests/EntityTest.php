@@ -19,6 +19,7 @@ class EntityTest extends TestCase
         $this->assertEquals(1, $this->entity->id);
         $this->assertEquals('John', $this->entity->first_name);
         $this->assertEquals('Doe', $this->entity->last_name);
+        $this->assertEquals('test@example.com', $this->entity->email->personal);
     }
 
     /**
@@ -33,6 +34,20 @@ class EntityTest extends TestCase
         $this->assertEquals(1, $array['id']);
         $this->assertEquals('John', $array['first_name']);
         $this->assertEquals('Doe', $array['last_name']);
+        $this->assertEquals('test@example.com', $array['email']['personal']);
+    }
+
+    /**
+     * @test
+     */
+    public function can_access_as_array()
+    {
+        $this->loadSampleEntity();
+
+        $this->assertEquals(1, $this->entity['id']);
+        $this->assertEquals('John', $this->entity['first_name']);
+        $this->assertEquals('Doe', $this->entity['last_name']);
+        $this->assertEquals('test@example.com', $this->entity['email']['personal']);
     }
 
     protected function loadSampleEntity()
@@ -41,6 +56,9 @@ class EntityTest extends TestCase
             'id' => 1,
             'first_name' => 'John',
             'last_name' => 'Doe',
+            'email' => (object) [
+                'personal' => 'test@example.com'
+            ]
         ]);
     }
 }

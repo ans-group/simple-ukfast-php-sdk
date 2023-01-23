@@ -37,22 +37,22 @@ class Entity implements ArrayAccess
     
     public function offsetExists($offset)
     {
-        return isset($this->props[$offset]);
+        return isset($this->props->{$offset});
     }
     
     public function offsetGet($offset)
     {
-        return $this->props[$offset];
+        return $this->props->{$offset};
     }
     
     public function offsetSet($offset, $value)
     {
-        $this->props[$offset] = $value;
+        $this->props->{$offset} = $value;
     }
     
     public function offsetUnset($offset)
     {
-        unset($this->props[$offset]);
+        unset($this->props->{$offset});
     }
 
     private function findSubEntities($props)
