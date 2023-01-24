@@ -83,14 +83,15 @@ class Client
         });
     }
 
-    public function update($path, $body, $params = [], $headers = [])
+    public function update($path, $body, $params = [], $headers = [], $usePut = false)
     {
-        return $this->updateAsync($path, $body, $params, $headers)->wait();
+        return $this->updateAsync($path, $body, $params, $headers, $usePut)->wait();
     }
 
-    public function updateAsync($path, $body, $params = [], $headers = [])
+    public function updateAsync($path, $body, $params = [], $headers = [], $usePut = false)
     {
-        $promise = $this->guzzle->patchAsync($this->path($path), [
+        $method = ($usePut ? 'put' : 'patch') . 'Async';
+        $promise = $this->guzzle->$method($this->path($path), [
             'query' => $this->formatQueryParams($params),
             'headers' => $this->headers($headers),
             'json' => $body,
