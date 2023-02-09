@@ -74,12 +74,7 @@ class Client
             
             return new SelfResponse($raw->data, $raw->meta);
         }, function ($e) {
-            if (!$e instanceof ClientException) {
-                throw $e;
-            }
-            
-            $raw = json_decode($e->getResponse()->getBody());
-            throw new ValidationException($raw->errors);
+            $this->handleErrorResponse($e);
         });
     }
 
@@ -101,6 +96,8 @@ class Client
             $raw = json_decode($response->getBody()->getContents());
             
             return new SelfResponse($raw->data, $raw->meta);
+        }, function ($e) {
+            $this->handleErrorResponse($e);
         });
     }
 
@@ -158,5 +155,15 @@ class Client
         }
         
         return $params;
+    }
+
+    protected function handleErrorResponse($e)
+    {
+        if (!$e instanceof ClientException) {
+            throw $e;
+        }
+
+        $raw = json_decode($e->getResponse()->getBody());
+        throw new ValidationException($raw->errors);
     }
 }
