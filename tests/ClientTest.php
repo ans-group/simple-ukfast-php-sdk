@@ -10,6 +10,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use UKFast\SimpleSDK\Client;
+use UKFast\SimpleSDK\Exceptions\ValidationException;
 use UKFast\SimpleSDK\Page;
 use UKFast\SimpleSDK\Entity;
 
@@ -184,18 +185,20 @@ class ClientTest extends TestCase
 
     /**
      * @test
+     * @dataProvider writeFunctionProvider
      */
-    public function wraps_client_exceptions_as_ukfast_exceptions()
+    public function handles_validation_exceptions_on_create_and_update($function)
     {
-        $this->markTestIncomplete(); // need to decide how we're doing exceptions
+        $responseError = [
+            'title' => 'Testing errors',
+            'detail' => 'Testing errors detail',
+            'status' => 422,
+            'source' => 'test'
+        ];
+
         $mock = new MockHandler([
-            new Response(400, [], json_encode([
-                'errors' => [[
-                    'title' => 'Testing errors',
-                    'detail' => 'Testing errors detail',
-                    'status' => 400,
-                    'source' => 'test'
-                ]]
+            new Response(422, [], json_encode([
+                'errors' => [$responseError]
             ])),
         ]);
         $handler = HandlerStack::create($mock);
@@ -203,16 +206,19 @@ class ClientTest extends TestCase
         $client = new Client($guzzle);
 
         try {
-            $client->request('GET', '/');
-        } catch (ApiException $e) {
-            $this->assertEquals(1, count($e->getErrors()));
-            $this->assertEquals('Testing errors detail', $e->getMessage());
+            $client->$function('POST', '/');
+        } catch (ValidationException $e) {
+            $this->assertEquals(1, count($e->errors));
+            $this->assertEquals('Validation error', $e->getMessage());
+
+            $exceptionError = $e->errors[0];
+            $this->assertEquals((object) $responseError, $exceptionError);
+
             return;
         }
 
-        $this->expectException(ApiException::class);
+        $this->expectException(ValidationException::class);
     }
-
     
     /**
      * @test
@@ -472,5 +478,13 @@ class ClientTest extends TestCase
         $uri = $container[0]['request']->getUri();
 
         $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+    }
+
+    protected function writeFunctionProvider()
+    {
+        return [
+            ['create'],
+            ['update'],
+        ];
     }
 }
