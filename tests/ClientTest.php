@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use DateTime;
 use GuzzleHttp\Client as Guzzle;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Middleware;
@@ -218,6 +218,31 @@ class ClientTest extends TestCase
         }
 
         $this->expectException(ValidationException::class);
+    }
+
+    /**
+     * @test
+     * @dataProvider writeFunctionProvider
+     */
+    public function doesnt_throw_validation_exceptions_for_other_client_errors($function)
+    {
+        $responseError = [
+            'title' => 'Unauthorized',
+            'detail' => 'Unauthorized',
+            'status' => 401,
+        ];
+
+        $mock = new MockHandler([
+            new Response(401, [], json_encode([
+                'errors' => [$responseError]
+            ])),
+        ]);
+        $handler = HandlerStack::create($mock);
+        $guzzle = new Guzzle(['handler' => $handler]);
+        $client = new Client($guzzle);
+
+        $this->expectException(ClientException::class);
+        $client->$function('POST', '/');
     }
     
     /**
