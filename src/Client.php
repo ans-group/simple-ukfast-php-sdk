@@ -163,6 +163,10 @@ class Client
             throw $e;
         }
 
+        if ($e->getResponse()->getStatusCode() != 422) {
+            throw $e;
+        }
+
         $raw = json_decode($e->getResponse()->getBody());
         throw new ValidationException($raw->errors);
     }
