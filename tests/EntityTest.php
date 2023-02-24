@@ -50,6 +50,20 @@ class EntityTest extends TestCase
         $this->assertEquals('test@example.com', $this->entity['email']['personal']);
     }
 
+    /**
+     * @test
+     */
+    public function can_serialize_nested_arrays()
+    {
+        $this->loadSampleEntity();
+
+        $this->assertInstanceOf(Entity::class, $this->entity->contacts[0]);
+        $this->assertInstanceOf(Entity::class, $this->entity->contacts[1]);
+
+        $this->assertEquals('John', $this->entity->contacts[0]->name);
+        $this->assertEquals('Jane', $this->entity->contacts[1]->name);
+    }
+
     protected function loadSampleEntity()
     {
         $this->entity = new Entity([
@@ -58,6 +72,16 @@ class EntityTest extends TestCase
             'last_name' => 'Doe',
             'email' => (object) [
                 'personal' => 'test@example.com'
+            ],
+            'contacts' => [
+                [
+                    'name' => 'John',
+                    'email' => 'john@example.com'
+                ],
+                [
+                    'name' => 'Jane',
+                    'email' => 'jane@example.com',
+                ]
             ]
         ]);
     }
