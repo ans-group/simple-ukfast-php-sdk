@@ -29,6 +29,11 @@ class Entity implements ArrayAccess
     {
         $this->props->{$prop} = $value;
     }
+
+    public function __isset($property)
+    {
+        return isset($this->props->{$property});
+    }
     
     public function toArray()
     {

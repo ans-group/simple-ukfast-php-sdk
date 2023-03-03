@@ -64,6 +64,15 @@ class EntityTest extends TestCase
         $this->assertEquals('Jane', $this->entity->contacts[1]->name);
     }
 
+    /** @test */
+    public function can_use_isset_against_a_property()
+    {
+        $this->loadSampleEntity();
+
+        $this->assertTrue(isset($this->entity->id));
+        $this->assertFalse(isset($this->entity->email_address));
+    }
+
     protected function loadSampleEntity()
     {
         $this->entity = new Entity([
