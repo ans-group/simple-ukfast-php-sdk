@@ -66,7 +66,7 @@ class Entity implements ArrayAccess
 
             if (is_array($value)) {
                 $newProps[$name] = array_map(function ($item) {
-                    if (is_object($item)) {
+                    if (is_object($item) || is_array($item)) {
                         return new Entity($item);
                     }
 

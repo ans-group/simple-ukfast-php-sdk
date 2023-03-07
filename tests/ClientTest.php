@@ -505,7 +505,7 @@ class ClientTest extends TestCase
         $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
     }
 
-    protected function writeFunctionProvider()
+    public function writeFunctionProvider()
     {
         return [
             ['create'],

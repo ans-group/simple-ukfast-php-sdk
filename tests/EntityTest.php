@@ -64,6 +64,17 @@ class EntityTest extends TestCase
         $this->assertEquals('Jane', $this->entity->contacts[1]->name);
     }
 
+    /**
+     * @test
+     */
+    public function does_not_serialize_nested_scalar_values()
+    {
+        $this->loadSampleEntity();
+
+        $this->assertSame("Mr Jack Doe", $this->entity->aliases[0]);
+        $this->assertSame("Mr J Doe", $this->entity->aliases[1]);
+    }
+
     protected function loadSampleEntity()
     {
         $this->entity = new Entity([
@@ -82,6 +93,10 @@ class EntityTest extends TestCase
                     'name' => 'Jane',
                     'email' => 'jane@example.com',
                 ]
+            ],
+            'aliases' => [
+                'Mr Jack Doe',
+                'Mr J Doe'
             ]
         ]);
     }
