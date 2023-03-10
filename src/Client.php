@@ -56,17 +56,17 @@ class Client
         });
     }
 
-    public function create($path, $body, $params = [], $headers = [])
+    public function create($path, $body = [], $params = [], $headers = [])
     {
         return $this->createAsync($path, $body, $params, $headers)->wait();
     }
 
-    public function createWithoutSelfResponse($path, $body, $params = [], $headers = [])
+    public function createWithoutSelfResponse($path, $body = [], $params = [], $headers = [])
     {
         return $this->createAsyncWithoutSelfResponse($path, $body, $params, $headers)->wait();
     }
 
-    public function createAsync($path, $body, $params = [], $headers = [])
+    public function createAsync($path, $body = [], $params = [], $headers = [])
     {
         $promise = $this->guzzle->postAsync($this->path($path), [
             'query' => $this->formatQueryParams($params),
@@ -83,7 +83,7 @@ class Client
         });
     }
 
-    public function createAsyncWithoutSelfResponse($path, $body, $params = [], $headers = [])
+    public function createAsyncWithoutSelfResponse($path, $body = [], $params = [], $headers = [])
     {
         $promise = $this->guzzle->postAsync($this->path($path), [
             'query' => $this->formatQueryParams($params),
@@ -98,12 +98,12 @@ class Client
         });
     }
 
-    public function update($path, $body, $params = [], $headers = [], $usePut = false)
+    public function update($path, $body = [], $params = [], $headers = [], $usePut = false)
     {
         return $this->updateAsync($path, $body, $params, $headers, $usePut)->wait();
     }
 
-    public function updateAsync($path, $body, $params = [], $headers = [], $usePut = false)
+    public function updateAsync($path, $body = [], $params = [], $headers = [], $usePut = false)
     {
         $method = ($usePut ? 'put' : 'patch') . 'Async';
         $promise = $this->guzzle->$method($this->path($path), [
