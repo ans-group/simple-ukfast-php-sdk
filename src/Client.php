@@ -61,6 +61,11 @@ class Client
         return $this->createAsync($path, $body, $params, $headers)->wait();
     }
 
+    public function createWithoutSelfResponse($path, $body, $params = [], $headers = [])
+    {
+        return $this->createAsyncWithoutSelfResponse($path, $body, $params, $headers)->wait();
+    }
+
     public function createAsync($path, $body, $params = [], $headers = [])
     {
         $promise = $this->guzzle->postAsync($this->path($path), [
@@ -73,6 +78,21 @@ class Client
             $raw = json_decode($response->getBody()->getContents());
             
             return new SelfResponse($raw->data, $raw->meta);
+        }, function ($e) {
+            $this->handleErrorResponse($e);
+        });
+    }
+
+    public function createAsyncWithoutSelfResponse($path, $body, $params = [], $headers = [])
+    {
+        $promise = $this->guzzle->postAsync($this->path($path), [
+            'query' => $this->formatQueryParams($params),
+            'headers' => $this->headers($headers),
+            'json' => $body,
+        ]);
+
+        return $promise->then(function () {
+            return true;
         }, function ($e) {
             $this->handleErrorResponse($e);
         });
