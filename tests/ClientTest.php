@@ -369,6 +369,30 @@ class ClientTest extends TestCase
     /**
      * @test
      */
+    public function create_method_returns_null_for_204_responses()
+    {
+        $mock = new MockHandler([
+            new Response(204),
+        ]);
+        $container = [];
+        $history = Middleware::history($container);
+        $handler = HandlerStack::create($mock);
+        $handler->push($history);
+        $guzzle = new Guzzle(['handler' => $handler]);
+        $client = new Client($guzzle);
+
+        $response = $client->create("/", ['name' => 'bing']);
+
+        $this->assertEquals(1, count($container));
+        $this->assertEquals('POST', $container[0]['request']->getMethod());
+        $this->assertEquals('{"name":"bing"}', $container[0]['request']->getBody()->getContents());
+
+        $this->assertNull($response);
+    }
+
+    /**
+     * @test
+     */
     public function can_send_query_params_as_array_for_post_requests()
     {
         $mock = new MockHandler([
