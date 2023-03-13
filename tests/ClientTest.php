@@ -369,7 +369,7 @@ class ClientTest extends TestCase
     /**
      * @test
      */
-    public function create_without_self_response_sends_post_requests_but_returns_true()
+    public function create_method_returns_null_for_204_responses()
     {
         $mock = new MockHandler([
             new Response(204),
@@ -381,13 +381,13 @@ class ClientTest extends TestCase
         $guzzle = new Guzzle(['handler' => $handler]);
         $client = new Client($guzzle);
 
-        $response = $client->createWithoutSelfResponse("/", ['name' => 'bing']);
+        $response = $client->create("/", ['name' => 'bing']);
 
         $this->assertEquals(1, count($container));
         $this->assertEquals('POST', $container[0]['request']->getMethod());
         $this->assertEquals('{"name":"bing"}', $container[0]['request']->getBody()->getContents());
 
-        $this->assertTrue($response);
+        $this->assertNull($response);
     }
 
     /**
