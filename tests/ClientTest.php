@@ -278,7 +278,7 @@ class ClientTest extends TestCase
     /**
      * @test
      */
-    public function can_send_query_params_as_array_for_get_requests()
+    public function can_handle_special_get_params_for_get_requests()
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode([
@@ -295,14 +295,17 @@ class ClientTest extends TestCase
         $guzzle = new Guzzle(['handler' => $handler]);
         $client = new Client($guzzle);
 
-        $response = $client->get("/", [
+        $client->get("/", [
             'id:in' => [1, 2, 3],
+            'email_address' => null,
+            'active' => true,
+            'deleted' => false,
         ]);
         
         $this->assertEquals(1, count($container));
         $uri = $container[0]['request']->getUri();
 
-        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+        $this->assertEquals('id:in=1,2,3&email_address=null&active=true&deleted=false', urldecode($uri->getQuery()));
     }
 
     /**
@@ -393,7 +396,7 @@ class ClientTest extends TestCase
     /**
      * @test
      */
-    public function can_send_query_params_as_array_for_post_requests()
+    public function can_handle_special_get_params_for_post_requests()
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode([
@@ -414,12 +417,15 @@ class ClientTest extends TestCase
         
         $client->create("/", ['name' => 'bing'], [
             'id:in' => [1, 2, 3],
+            'email_address' => null,
+            'active' => true,
+            'deleted' => false,
         ]);
         
         $this->assertEquals(1, count($container));
         $uri = $container[0]['request']->getUri();
 
-        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+        $this->assertEquals('id:in=1,2,3&email_address=null&active=true&deleted=false', urldecode($uri->getQuery()));
     }
 
     /**
@@ -454,7 +460,7 @@ class ClientTest extends TestCase
     /**
      * @test
      */
-    public function can_send_query_params_as_array_for_patch_requests()
+    public function can_handle_special_get_params_for_patch_requests()
     {
         $mock = new MockHandler([
             new Response(200, [], json_encode([
@@ -475,12 +481,15 @@ class ClientTest extends TestCase
         
         $client->update("/", ['name' => 'bing'], [
             'id:in' => [1, 2, 3],
+            'email_address' => null,
+            'active' => true,
+            'deleted' => false,
         ]);
         
         $this->assertEquals(1, count($container));
         $uri = $container[0]['request']->getUri();
 
-        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+        $this->assertEquals('id:in=1,2,3&email_address=null&active=true&deleted=false', urldecode($uri->getQuery()));
     }
 
     /**
@@ -507,7 +516,7 @@ class ClientTest extends TestCase
     /**
      * @test
      */
-    public function can_send_query_params_as_array_for_delete_requests()
+    public function can_handle_special_get_params_for_delete_requests()
     {
         $mock = new MockHandler([
             new Response(204),
@@ -521,12 +530,15 @@ class ClientTest extends TestCase
         
         $client->destroy("/", [
             'id:in' => [1, 2, 3],
+            'email_address' => null,
+            'active' => true,
+            'deleted' => false,
         ]);
         
         $this->assertEquals(1, count($container));
         $uri = $container[0]['request']->getUri();
 
-        $this->assertEquals('id:in=1,2,3', urldecode($uri->getQuery()));
+        $this->assertEquals('id:in=1,2,3&email_address=null&active=true&deleted=false', urldecode($uri->getQuery()));
     }
 
     public function writeFunctionProvider()
