@@ -156,6 +156,18 @@ class Client
             if (is_array($param)) {
                 $param = implode(',', $param);
             }
+
+            if ($param === true) {
+                $param = 'true';
+            }
+
+            if ($param === false) {
+                $param = 'false';
+            }
+
+            if ($param === null) {
+                $param = 'null';
+            }
         }
         
         return $params;
